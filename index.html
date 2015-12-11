@@ -11,6 +11,9 @@
         <script src="js/controllers/StatsController.js"></script>
         <script src="js/factories/FlashCardFactory.js"></script>
         <script src="js/factories/ScoreFactory.js"></script>
+        <script src="js/directives/loader/loader.js"></script>
+        <script src="js/directives/flashcard/flashcardDirective.js"></script>
+        <script src="js/directives/border-hover/borderHoverDirective.js"></script>
     </head>
 
     <body>
@@ -18,7 +21,7 @@
         <div ng-app="FlashCards">
 
             <div ng-controller="StatsController" id="statistics">
-
+                
                 <div id="scoreboard">
                     <h3>Correct: <span>{{ scores.correct }}</span></h3>
                     <h3>Incorrect: <span>{{ scores.incorrect }}</span></h3>
@@ -31,24 +34,12 @@
                 <button ng-click="getAllCards()" ng-class="{ active: currentCategory === null }" class="category-button">All</button>
                 <button ng-click="getCategoryCards(category)" ng-class="{ active: currentCategory === category }" ng-repeat="category in categories" class="category-button">{{ category }}</button>
 
-                <div ng-repeat="flashCard in flashCards | orderBy:'question'" ng-controller="FlashCardController" class="flash-card">
-                    <h1>{{ flashCard.question | uppercase }}</h1>
-                    <h3>{{ flashCard.category }}</h3>
-                    <ul class="flash-card-answers">
-                        <li class="flash-card-answer"
-                            ng-click="answerQuestion(answer)"
-                            ng-repeat="answer in flashCard.answers">
-                            {{ answer.text }}
-                        </li>
-                    </ul>
-                    <h2 class="answer-feedback"
-                        ng-class="{ correct: answeredCorrectly, incorrect: !answeredCorrectly }"
-                        ng-show="answered">
-                        <span ng-show="answeredCorrectly">Yeah, you got it right!</span>
-                        <span ng-show="!answeredCorrectly">Nope, you got it wrong.</span>
-                    </h2>
+                <div>
+                    <loader ng-show="loading"></loader>
                 </div>
-
+                <div ng-hide="loading" ng-repeat="flashCard in flashCards | orderBy:'question'" class="flash-card" border-hover>
+                    <flash-card card="flashCard"></flash-card>
+                </div>
             </div>
             
         </div>
